@@ -1,0 +1,78 @@
+name: Build and publish rules
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 22 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rules-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: generator/go.mod
+          cache-dependency-path: generator/go.sum
+      - name: Test and check formatting
+        working-directory: generator
+        run: |
+          test -z "$(gofmt -l *.go)"
+          go test -race ./...
+          go vet ./...
+          bash -n publish.sh
+      - name: Verify committed baseline
+        working-directory: generator
+        run: |
+          go run . build
+          go run . check
+          git diff --exit-code -- ../dist sources.lock.json
+      - name: Refresh upstream snapshots
+        if: github.event_name != 'pull_request'
+        working-directory: generator
+        run: go run . update
+      - name: Verify reproducibility
+        working-directory: generator
+        run: |
+          cp ../dist/manifest.json "$RUNNER_TEMP/first-manifest.json"
+          go run . build
+          go run . check
+          cmp ../dist/manifest.json "$RUNNER_TEMP/first-manifest.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: rules-bundle
+          path: dist/
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    if: github.repository == 'zerovoxxx/AKClash-rules' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Prepare artifact directory
+        run: rm -rf dist
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: rules-bundle
+          path: dist/
+      - name: Publish immutable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash generator/publish.sh

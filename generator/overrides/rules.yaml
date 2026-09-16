@@ -1,0 +1,44 @@
+# Explicit service corrections; personal domains and account data are excluded.
+ai-cn-domain:
+  add:
+  - +.kimi.ai
+  - +.moonshot.ai
+ai-proxy-domain:
+  add:
+  - +.copilot.microsoft.com
+  - +.copilot.cloud.microsoft
+  - +.copilot.com
+  - +.copilot-stg.com
+  remove:
+  - browser-intake-datadoghq.com
+proxy-domain:
+  add:
+  - hls.itunes.apple.com
+  - itunes.apple.com
+  - itunes.com
+  - +.bing.com
+  - +.live.com
+  - +.microsofttranslator.com
+  - +.windows.com
+  - +.windows.net
+  remove:
+  - +.edgekey.net
+  - +.edgesuite.net
+  - +.akamaized.net
+  - +.akadns.net
+platform-direct-domain:
+  add:
+  - +.digicert.com
+  - +.icloud.com
+  - +.icloud-content.com
+  - +.mzstatic.com
+  - +.aaplimg.com
+  - +.cdn-apple.com
+  - +.apple.com
+  - +.microsoft.com
+  - +.microsoftonline.com
+  - +.office.com
+  - +.office365.com
+platform-direct-ip:
+  add:
+  - 17.0.0.0/8

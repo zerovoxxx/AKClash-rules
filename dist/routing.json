@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "rules": [
+    {
+      "type": "rule-set",
+      "provider": "private-domain",
+      "target": "DIRECT"
+    },
+    {
+      "type": "rule-set",
+      "provider": "private-ip",
+      "target": "DIRECT",
+      "no_resolve": true
+    },
+    {
+      "type": "personal"
+    },
+    {
+      "type": "remote"
+    },
+    {
+      "type": "rule-set",
+      "provider": "ai-cn-domain",
+      "target": "DIRECT"
+    },
+    {
+      "type": "rule-set",
+      "provider": "ai-proxy-domain",
+      "target": "Proxy"
+    },
+    {
+      "type": "rule-set",
+      "provider": "chat-domain",
+      "target": "Proxy"
+    },
+    {
+      "type": "rule-set",
+      "provider": "proxy-domain",
+      "target": "Proxy"
+    },
+    {
+      "type": "rule-set",
+      "provider": "platform-direct-domain",
+      "target": "DIRECT"
+    },
+    {
+      "type": "rule-set",
+      "provider": "cn-domain",
+      "target": "DIRECT"
+    },
+    {
+      "type": "rule-set",
+      "provider": "chat-ip",
+      "target": "Proxy"
+    },
+    {
+      "type": "rule-set",
+      "provider": "platform-direct-ip",
+      "target": "DIRECT"
+    },
+    {
+      "type": "rule-set",
+      "provider": "cn-ip",
+      "target": "DIRECT"
+    },
+    {
+      "type": "match",
+      "target": "Proxy"
+    }
+  ]
+}

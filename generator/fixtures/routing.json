@@ -1,0 +1,429 @@
+[
+  {
+    "name": "Domestic AI: api.deepseek.com",
+    "host": "api.deepseek.com",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "ai-cn-domain"
+  },
+  {
+    "name": "Domestic AI: www.doubao.com",
+    "host": "www.doubao.com",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "ai-cn-domain"
+  },
+  {
+    "name": "Domestic AI: kimi.com",
+    "host": "kimi.com",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "ai-cn-domain"
+  },
+  {
+    "name": "Domestic AI: kimi.ai",
+    "host": "kimi.ai",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "ai-cn-domain"
+  },
+  {
+    "name": "Domestic AI: moonshot.ai",
+    "host": "moonshot.ai",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "ai-cn-domain"
+  },
+  {
+    "name": "Domestic AI: tongyi.aliyun.com",
+    "host": "tongyi.aliyun.com",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "ai-cn-domain"
+  },
+  {
+    "name": "Domestic AI: qwen.ai",
+    "host": "qwen.ai",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "ai-cn-domain"
+  },
+  {
+    "name": "Overseas AI: chatgpt.com",
+    "host": "chatgpt.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "ai-proxy-domain"
+  },
+  {
+    "name": "Overseas AI: chat.openai.com",
+    "host": "chat.openai.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "ai-proxy-domain"
+  },
+  {
+    "name": "Overseas AI: claude.com",
+    "host": "claude.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "ai-proxy-domain"
+  },
+  {
+    "name": "Overseas AI: claudeusercontent.com",
+    "host": "claudeusercontent.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "ai-proxy-domain"
+  },
+  {
+    "name": "Overseas AI: gemini.google.com",
+    "host": "gemini.google.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "ai-proxy-domain"
+  },
+  {
+    "name": "Overseas AI: copilot.microsoft.com",
+    "host": "copilot.microsoft.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "ai-proxy-domain"
+  },
+  {
+    "name": "Overseas AI: githubcopilot.com",
+    "host": "githubcopilot.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "ai-proxy-domain"
+  },
+  {
+    "name": "Overseas AI: copilot.cloud.microsoft",
+    "host": "copilot.cloud.microsoft",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "ai-proxy-domain"
+  },
+  {
+    "name": "Overseas AI: grok.com",
+    "host": "grok.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "ai-proxy-domain"
+  },
+  {
+    "name": "Proxy service: play.googleapis.com",
+    "host": "play.googleapis.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "proxy-domain"
+  },
+  {
+    "name": "Chat service: t.me",
+    "host": "t.me",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "chat-domain"
+  },
+  {
+    "name": "Proxy service: github.com",
+    "host": "github.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "proxy-domain"
+  },
+  {
+    "name": "Proxy service: x.com",
+    "host": "x.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "proxy-domain"
+  },
+  {
+    "name": "Proxy service: youtube.com",
+    "host": "youtube.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "proxy-domain"
+  },
+  {
+    "name": "Proxy service: netflix.com",
+    "host": "netflix.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "proxy-domain"
+  },
+  {
+    "name": "Proxy service: spotify.com",
+    "host": "spotify.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "proxy-domain"
+  },
+  {
+    "name": "Proxy service: hls.itunes.apple.com",
+    "host": "hls.itunes.apple.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "proxy-domain"
+  },
+  {
+    "name": "Proxy service: itunes.apple.com",
+    "host": "itunes.apple.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "proxy-domain"
+  },
+  {
+    "name": "Proxy service: itunes.com",
+    "host": "itunes.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "proxy-domain"
+  },
+  {
+    "name": "Proxy service: bing.com",
+    "host": "bing.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "proxy-domain"
+  },
+  {
+    "name": "Proxy service: live.com",
+    "host": "live.com",
+    "ip": "223.5.5.5",
+    "target": "Proxy",
+    "provider": "proxy-domain"
+  },
+  {
+    "name": "Platform direct: icloud.com",
+    "host": "icloud.com",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "platform-direct-domain"
+  },
+  {
+    "name": "Platform direct: apple.com",
+    "host": "apple.com",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "platform-direct-domain"
+  },
+  {
+    "name": "Platform direct: microsoft.com",
+    "host": "microsoft.com",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "platform-direct-domain"
+  },
+  {
+    "name": "Platform direct: office.com",
+    "host": "office.com",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "platform-direct-domain"
+  },
+  {
+    "name": "Domestic domain: www.baidu.com",
+    "host": "www.baidu.com",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "cn-domain"
+  },
+  {
+    "name": "Domestic domain: www.qq.com",
+    "host": "www.qq.com",
+    "ip": "8.8.8.8",
+    "target": "DIRECT",
+    "provider": "cn-domain"
+  },
+  {
+    "name": "LAN: 10.1.2.3",
+    "ip": "10.1.2.3",
+    "target": "DIRECT",
+    "provider": "private-ip"
+  },
+  {
+    "name": "LAN: 172.16.1.1",
+    "ip": "172.16.1.1",
+    "target": "DIRECT",
+    "provider": "private-ip"
+  },
+  {
+    "name": "LAN: 192.168.1.1",
+    "ip": "192.168.1.1",
+    "target": "DIRECT",
+    "provider": "private-ip"
+  },
+  {
+    "name": "LAN: 127.0.0.1",
+    "ip": "127.0.0.1",
+    "target": "DIRECT",
+    "provider": "private-ip"
+  },
+  {
+    "name": "LAN: fd00::123",
+    "ip": "fd00::123",
+    "target": "DIRECT",
+    "provider": "private-ip"
+  },
+  {
+    "name": "LAN: fe80::123",
+    "ip": "fe80::123",
+    "target": "DIRECT",
+    "provider": "private-ip"
+  },
+  {
+    "name": "LAN: ::1",
+    "ip": "::1",
+    "target": "DIRECT",
+    "provider": "private-ip"
+  },
+  {
+    "name": "LAN before app rule",
+    "ip": "192.168.1.1",
+    "process": "cn.futu.trader",
+    "personal": [
+      "PROCESS-NAME,cn.futu.trader,Proxy"
+    ],
+    "target": "DIRECT",
+    "provider": "private-ip"
+  },
+  {
+    "name": "Public process exception",
+    "ip": "223.5.5.5",
+    "process": "cn.futu.trader",
+    "personal": [
+      "PROCESS-NAME,cn.futu.trader,Proxy"
+    ],
+    "target": "Proxy",
+    "provider": "personal"
+  },
+  {
+    "name": "Private hostname",
+    "host": "nas.local",
+    "target": "DIRECT",
+    "provider": "private-domain"
+  },
+  {
+    "name": "Personal direct domain",
+    "host": "nas.routing-check.net",
+    "personal": [
+      "DOMAIN-SUFFIX,routing-check.net,DIRECT"
+    ],
+    "target": "DIRECT",
+    "provider": "personal"
+  },
+  {
+    "name": "Personal proxy overrides CN",
+    "host": "www.qq.com",
+    "personal": [
+      "DOMAIN-SUFFIX,qq.com,Proxy"
+    ],
+    "target": "Proxy",
+    "provider": "personal"
+  },
+  {
+    "name": "Remote before AI",
+    "host": "chatgpt.com",
+    "remote": [
+      {
+        "behavior": "domain",
+        "payload": [
+          "+.chatgpt.com"
+        ],
+        "target": "DIRECT"
+      }
+    ],
+    "target": "DIRECT",
+    "provider": "remote"
+  },
+  {
+    "name": "Removed remote restores built-in",
+    "host": "chatgpt.com",
+    "target": "Proxy",
+    "provider": "ai-proxy-domain"
+  },
+  {
+    "name": "Telegram IP: 91.108.56.1",
+    "ip": "91.108.56.1",
+    "target": "Proxy",
+    "provider": "chat-ip"
+  },
+  {
+    "name": "Telegram IP: 149.154.160.1",
+    "ip": "149.154.160.1",
+    "target": "Proxy",
+    "provider": "chat-ip"
+  },
+  {
+    "name": "Telegram IP: 2001:b28:f23d::1",
+    "ip": "2001:b28:f23d::1",
+    "target": "Proxy",
+    "provider": "chat-ip"
+  },
+  {
+    "name": "Telegram resolved IP",
+    "host": "unlisted.routing-check.net",
+    "resolved_ip": "91.108.56.1",
+    "target": "Proxy",
+    "provider": "chat-ip"
+  },
+  {
+    "name": "CN IP: 223.5.5.5",
+    "ip": "223.5.5.5",
+    "target": "DIRECT",
+    "provider": "cn-ip"
+  },
+  {
+    "name": "CN IP: 2400:3200::1",
+    "ip": "2400:3200::1",
+    "target": "DIRECT",
+    "provider": "cn-ip"
+  },
+  {
+    "name": "CN resolved IP",
+    "host": "unlisted.routing-check.net",
+    "resolved_ip": "223.5.5.5",
+    "target": "DIRECT",
+    "provider": "cn-ip"
+  },
+  {
+    "name": "Apple public network",
+    "ip": "17.1.2.3",
+    "target": "DIRECT",
+    "provider": "platform-direct-ip"
+  },
+  {
+    "name": "No keyword -cn heuristic",
+    "host": "example-cn.routing-check.net",
+    "ip": "8.8.8.8",
+    "target": "Proxy",
+    "provider": "MATCH"
+  },
+  {
+    "name": "No shared CDN direct heuristic",
+    "host": "unrelated.akamaized.net",
+    "ip": "8.8.8.8",
+    "target": "Proxy",
+    "provider": "MATCH"
+  },
+  {
+    "name": "Default IPv4",
+    "ip": "8.8.8.8",
+    "target": "Proxy",
+    "provider": "MATCH"
+  },
+  {
+    "name": "Default IPv6",
+    "ip": "2606:4700:4700::1111",
+    "target": "Proxy",
+    "provider": "MATCH"
+  },
+  {
+    "name": "Default hostname",
+    "host": "unlisted.routing-check.net",
+    "target": "Proxy",
+    "provider": "MATCH"
+  }
+]

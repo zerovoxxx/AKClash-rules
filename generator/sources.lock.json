@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "private-domain",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/private.yaml",
+      "behavior": "domain",
+      "min_rules": 100,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "10918636e35f4182a62d4ba06e4abe70e203d53e26548d5c27abf0f9bebe475b",
+      "bytes": 3478
+    },
+    {
+      "id": "private-ip",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geoip/private.yaml",
+      "behavior": "ipcidr",
+      "min_rules": 10,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "397ddcfd2969af6b7ed3a6e586b512ad0124a99d5cd7cc614e9fd74d434400f5",
+      "bytes": 341
+    },
+    {
+      "id": "ai-cn",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/category-ai-cn.yaml",
+      "behavior": "domain",
+      "min_rules": 50,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "5c59a813db311a35274eb7cffcf0642ad8c15c27729195d625f5e5efd31ffb70",
+      "bytes": 2415
+    },
+    {
+      "id": "openai",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/openai.yaml",
+      "behavior": "domain",
+      "min_rules": 10,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "19d194277b7eccade2b6d65a5a13770e028feea3e39140faaac43bd12d5a34af",
+      "bytes": 664
+    },
+    {
+      "id": "anthropic",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/anthropic.yaml",
+      "behavior": "domain",
+      "min_rules": 5,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "5f1bbc6cec303a0f8010303daac24d92ac58efc905b4847e397b06320e23d0c5",
+      "bytes": 211
+    },
+    {
+      "id": "gemini",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/google-gemini.yaml",
+      "behavior": "domain",
+      "min_rules": 10,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "bf83ad16a807e314a41a94cba74eab7171b013fcfa0d8207fc966a8f5699cfac",
+      "bytes": 1248
+    },
+    {
+      "id": "copilot",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/github-copilot.yaml",
+      "behavior": "domain",
+      "min_rules": 3,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "1dcfbf4834533d757e3fc85cec2a79bd033bcf2746d32c0efd10db5502ebd3ce",
+      "bytes": 267
+    },
+    {
+      "id": "xai",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/xai.yaml",
+      "behavior": "domain",
+      "min_rules": 2,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "bc278d0ddab487db1db20b84289007acde3730917f67fdbd093bc8bebb8b4c91",
+      "bytes": 81
+    },
+    {
+      "id": "google",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/google.yaml",
+      "behavior": "domain",
+      "min_rules": 100,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "d502bd5f50dee5029a556fc01721e2be0c8cf41b053a2f6cd81761a30f0498d6",
+      "bytes": 24667
+    },
+    {
+      "id": "github",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/github.yaml",
+      "behavior": "domain",
+      "min_rules": 20,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "e1c015908fae8789afb5adc395e8bbf6acb3868a48462968431eeefda0c8ca26",
+      "bytes": 2318
+    },
+    {
+      "id": "telegram",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/telegram.yaml",
+      "behavior": "domain",
+      "min_rules": 5,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "4712014d6fcb434daf8b03b4740e37445109b42bc0e824f6acbce733ef92abb0",
+      "bytes": 429
+    },
+    {
+      "id": "twitter",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/twitter.yaml",
+      "behavior": "domain",
+      "min_rules": 5,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "e21969caac51ecd0534345a8b19166d7a0c31cd595a8eef167e1d82f5ed1d414",
+      "bytes": 523
+    },
+    {
+      "id": "youtube",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/youtube.yaml",
+      "behavior": "domain",
+      "min_rules": 20,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "ec32854438b8ad4e2f2f2ee0d578834c667f1d0cec4c82357e34629452d2fc5d",
+      "bytes": 3821
+    },
+    {
+      "id": "netflix",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/netflix.yaml",
+      "behavior": "domain",
+      "min_rules": 10,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "4cf3bf6f2b28d578894d767415bbca0cc8ff4bf326b1ad8fffd59dba41da016f",
+      "bytes": 606
+    },
+    {
+      "id": "spotify",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/spotify.yaml",
+      "behavior": "domain",
+      "min_rules": 10,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "f3e69f940cacfa667dfe14d656523d9eb84d358a64195cd0fdefa5d3b0a0ee26",
+      "bytes": 800
+    },
+    {
+      "id": "cn-domain",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geosite/cn.yaml",
+      "behavior": "domain",
+      "min_rules": 70000,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "10da0a71d558292e73668273c91e577e5a85781bd141798e91ef7baf55b3d09e",
+      "bytes": 2293742
+    },
+    {
+      "id": "cn-ip",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geoip/cn.yaml",
+      "behavior": "ipcidr",
+      "min_rules": 4000,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "72af2e5d5907a143fca60021089674618ad05ee206c4152ffefa92634388a44c",
+      "bytes": 211504
+    },
+    {
+      "id": "telegram-ip",
+      "repository": "MetaCubeX/meta-rules-dat",
+      "ref": "meta",
+      "path": "geo/geoip/telegram.yaml",
+      "behavior": "ipcidr",
+      "min_rules": 5,
+      "revision": "3183259a6636ad3ab4623917d6b01f42ad443aaf",
+      "sha256": "12a1e7bd189fc23db25e9ac45f3bb8e9a5978048541a0358a46ef72b110812ae",
+      "bytes": 274
+    }
+  ]
+}
