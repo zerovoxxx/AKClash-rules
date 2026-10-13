@@ -18,6 +18,7 @@ import (
 
 	C "github.com/metacubex/mihomo/constant"
 	P "github.com/metacubex/mihomo/constant/provider"
+	R "github.com/metacubex/mihomo/rules"
 	RP "github.com/metacubex/mihomo/rules/provider"
 	"gopkg.in/yaml.v3"
 )
@@ -85,7 +86,7 @@ func parsePayload(data []byte, behavior string) ([]string, error) {
 var domainLabel = regexp.MustCompile(`^[a-z0-9_-]+$`)
 
 func normalize(behavior string, values []string) ([]string, error) {
-	if behavior != "domain" && behavior != "ipcidr" {
+	if behavior != "domain" && behavior != "ipcidr" && behavior != "classical" {
 		return nil, fmt.Errorf("unsupported behavior %q", behavior)
 	}
 	unique := map[string]bool{}
@@ -93,7 +94,27 @@ func normalize(behavior string, values []string) ([]string, error) {
 		if v == "" || strings.TrimSpace(v) != v {
 			return nil, fmt.Errorf("empty or padded rule %q", v)
 		}
-		if behavior == "ipcidr" {
+		if behavior == "classical" {
+			parts := strings.Split(v, ",")
+			if len(parts) < 2 || len(parts) > 3 || parts[1] == "" || strings.TrimSpace(parts[1]) != parts[1] {
+				return nil, fmt.Errorf("invalid classical rule %q", v)
+			}
+			switch parts[0] {
+			case "DOMAIN", "DOMAIN-SUFFIX", "DOMAIN-KEYWORD", "DOMAIN-REGEX", "DOMAIN-WILDCARD", "IP-CIDR", "IP-CIDR6", "SRC-IP-CIDR", "PROCESS-NAME", "PROCESS-PATH", "PROCESS-NAME-REGEX", "PROCESS-PATH-REGEX", "DST-PORT", "SRC-PORT", "NETWORK":
+			default:
+				return nil, fmt.Errorf("unsupported classical rule %q", v)
+			}
+			var params []string
+			if len(parts) == 3 {
+				if (parts[0] != "IP-CIDR" && parts[0] != "IP-CIDR6") || parts[2] != "no-resolve" {
+					return nil, errors.New("classical payload must not contain an outbound target")
+				}
+				params = parts[2:]
+			}
+			if _, err := R.ParseRule(parts[0], parts[1], "DIRECT", params, nil); err != nil {
+				return nil, fmt.Errorf("invalid classical rule %q: %w", v, err)
+			}
+		} else if behavior == "ipcidr" {
 			p, err := netip.ParsePrefix(v)
 			if err != nil {
 				return nil, fmt.Errorf("invalid CIDR %q: %w", v, err)
@@ -147,6 +168,8 @@ func newMatcher(behavior string, entries []string) (ruleMatcher, error) {
 		m = RP.NewDomainStrategy()
 	case "ipcidr":
 		m = RP.NewIPCidrStrategy()
+	case "classical":
+		m = RP.NewClassicalStrategy(R.ParseRule)
 	default:
 		return nil, fmt.Errorf("unsupported behavior %q", behavior)
 	}
@@ -166,12 +189,15 @@ func payloadYAML(entries []string) []byte {
 	var b strings.Builder
 	b.WriteString("payload:\n")
 	for _, entry := range entries {
-		fmt.Fprintf(&b, "  - '%s'\n", entry)
+		fmt.Fprintf(&b, "  - '%s'\n", strings.ReplaceAll(entry, "'", "''"))
 	}
 	return []byte(b.String())
 }
 
 func compileMRS(behavior string, entries []string) ([]byte, error) {
+	if behavior == "classical" {
+		return nil, errors.New("MRS cannot contain classical rules")
+	}
 	canonical, err := normalize(behavior, entries)
 	if err != nil {
 		return nil, err

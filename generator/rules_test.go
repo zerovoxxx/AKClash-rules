@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -274,57 +275,72 @@ func TestDownloadRejectsErrorsAndOversizedResponses(t *testing.T) {
 }
 
 func TestPublishValidatesBeforeCallingGitHub(t *testing.T) {
-	for _, corrupt := range []bool{false, true} {
-		t.Run(fmtBool(corrupt), func(t *testing.T) {
-			root := t.TempDir()
-			if err := os.MkdirAll(filepath.Join(root, "generator"), 0755); err != nil {
-				t.Fatal(err)
-			}
-			script, err := os.ReadFile("publish.sh")
-			if err != nil {
-				t.Fatal(err)
-			}
-			scriptPath := filepath.Join(root, "generator", "publish.sh")
-			if err = os.WriteFile(scriptPath, script, 0644); err != nil {
-				t.Fatal(err)
-			}
-			cfg, patches, lock, inputs := sampleBuild(t)
-			b, err := generate(cfg, patches, lock, inputs, "generator-hash")
-			if err != nil {
-				t.Fatal(err)
-			}
-			if err = writeBundle(filepath.Join(root, "dist"), b); err != nil {
-				t.Fatal(err)
-			}
-			if corrupt {
-				if err = os.Remove(filepath.Join(root, "dist", "mrs", "ai-cn-domain.mrs")); err != nil {
+	for _, schema := range []int{1, 2} {
+		for _, corrupt := range []bool{false, true} {
+			t.Run(fmt.Sprintf("schema-%d-%s", schema, fmtBool(corrupt)), func(t *testing.T) {
+				root := t.TempDir()
+				if err := os.MkdirAll(filepath.Join(root, "generator"), 0755); err != nil {
 					t.Fatal(err)
 				}
-			}
-			mock := "#!/bin/sh\nprintf '%s\\n' \"$*\" >> \"$GH_TEST_LOG\"\nif [ \"$1\" = api ]; then echo 'gh: Not Found (HTTP 404)' >&2; exit 1; fi\n"
-			if err = os.WriteFile(filepath.Join(root, "gh"), []byte(mock), 0755); err != nil {
-				t.Fatal(err)
-			}
-			log := filepath.Join(root, "calls")
-			cmd := exec.Command("bash", scriptPath)
-			cmd.Env = append(os.Environ(), "PATH="+root+string(os.PathListSeparator)+os.Getenv("PATH"), "GH_TEST_LOG="+log, "GITHUB_REPOSITORY=zerovoxxx/AKClash-rules", "GITHUB_SHA=0123456789012345678901234567890123456789")
-			output, err := cmd.CombinedOutput()
-			calls, _ := os.ReadFile(log)
-			if corrupt {
-				if err == nil || len(calls) != 0 {
-					t.Fatalf("invalid artifact reached GitHub: err=%v calls=%s output=%s", err, calls, output)
-				}
-			} else {
+				script, err := os.ReadFile("publish.sh")
 				if err != nil {
-					t.Fatalf("publish: %v %s", err, output)
+					t.Fatal(err)
 				}
-				text := string(calls)
-				create, upload, publish := strings.Index(text, "release create"), strings.Index(text, "release upload"), strings.Index(text, "release edit")
-				if create < 0 || upload < create || publish < upload || !strings.Contains(text, "--draft=false --latest") {
-					t.Fatalf("wrong publication order: %s", text)
+				scriptPath := filepath.Join(root, "generator", "publish.sh")
+				if err = os.WriteFile(scriptPath, bytes.ReplaceAll(script, []byte("\r\n"), []byte("\n")), 0644); err != nil {
+					t.Fatal(err)
 				}
-			}
-		})
+				cfg, patches, lock, inputs := sampleBuild(t)
+				if schema == 2 {
+					cfg.SchemaVersion = 2
+					cfg.Packages = append(cfg.Packages, Package{ID: "app-proxy", Behavior: "classical"})
+					patches["app-proxy"] = Patch{Add: []string{"PROCESS-NAME,com.example.ai"}}
+					cfg.Routing = append(cfg.Routing[:2], append([]Route{{Type: "rule-set", Provider: "app-proxy", Target: "Proxy"}}, cfg.Routing[2:]...)...)
+				}
+				b, err := generate(cfg, patches, lock, inputs, "generator-hash")
+				if err != nil {
+					t.Fatal(err)
+				}
+				if err = writeBundle(filepath.Join(root, "dist"), b); err != nil {
+					t.Fatal(err)
+				}
+				if corrupt {
+					name := filepath.Join(root, "dist", "mrs", "ai-cn-domain.mrs")
+					if schema == 2 {
+						name = filepath.Join(root, "dist", "yaml", "app-proxy.yaml")
+					}
+					if err = os.Remove(name); err != nil {
+						t.Fatal(err)
+					}
+				}
+				mock := "#!/bin/sh\nprintf '%s\\n' \"$*\" >> \"$GH_TEST_LOG\"\nif [ \"$1\" = api ]; then echo 'gh: Not Found (HTTP 404)' >&2; exit 1; fi\n"
+				if err = os.WriteFile(filepath.Join(root, "gh"), []byte(mock), 0755); err != nil {
+					t.Fatal(err)
+				}
+				log := filepath.Join(root, "calls")
+				cmd := exec.Command("bash", scriptPath)
+				cmd.Env = append(os.Environ(), "PATH="+root+string(os.PathListSeparator)+os.Getenv("PATH"), "GH_TEST_LOG="+log, "GITHUB_REPOSITORY=zerovoxxx/AKClash-rules", "GITHUB_SHA=0123456789012345678901234567890123456789")
+				output, err := cmd.CombinedOutput()
+				calls, _ := os.ReadFile(log)
+				if corrupt {
+					if err == nil || len(calls) != 0 {
+						t.Fatalf("invalid artifact reached GitHub: err=%v calls=%s output=%s", err, calls, output)
+					}
+				} else {
+					if err != nil {
+						t.Fatalf("publish: %v %s", err, output)
+					}
+					text := string(calls)
+					if schema == 2 && (!strings.Contains(text, "dist/manifest-v2.json") || !strings.Contains(text, "dist/yaml/app-proxy.yaml")) {
+						t.Fatalf("v2 publication assets missing: %s", text)
+					}
+					create, upload, publish := strings.Index(text, "release create"), strings.Index(text, "release upload"), strings.Index(text, "release edit")
+					if create < 0 || upload < create || publish < upload || !strings.Contains(text, "--draft=false --latest") {
+						t.Fatalf("wrong publication order: %s", text)
+					}
+				}
+			})
+		}
 	}
 }
 
@@ -333,6 +349,116 @@ func fmtBool(v bool) string {
 		return "corrupt"
 	}
 	return "valid"
+}
+
+func TestClassicalApplicationPackageAndLegacyManifest(t *testing.T) {
+	cfg, patches, lock, inputs := sampleBuild(t)
+	cfg.SchemaVersion = 2
+	cfg.Packages = append(cfg.Packages, Package{ID: "app-proxy", Behavior: "classical"})
+	patches["app-proxy"] = Patch{Add: []string{"PROCESS-NAME,com.example.ai"}}
+	cfg.Routing = append(cfg.Routing[:2], append([]Route{{Type: "rule-set", Provider: "app-proxy", Target: "Proxy"}}, cfg.Routing[2:]...)...)
+	b, err := generate(cfg, patches, lock, inputs, "generator-hash")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, exists := b.Files["mrs/app-proxy.mrs"]; exists {
+		t.Fatal("classical MRS must not be generated")
+	}
+	fixtures := []Fixture{
+		{Name: "application main domain", Process: "com.example.ai", Host: "api.openai.com", Target: "Proxy", Provider: "app-proxy"},
+		{Name: "application third-party domain", Process: "com.example.ai", Host: "api.kimi.ai", Target: "Proxy", Provider: "app-proxy"},
+		{Name: "application IP-only", Process: "com.example.ai", IP: "203.0.113.9", Target: "Proxy", Provider: "app-proxy"},
+		{Name: "other application", Process: "com.example.other", Host: "api.kimi.ai", Target: "DIRECT", Provider: "ai-cn-domain"},
+		{Name: "personal precedence", Process: "com.example.ai", Host: "api.kimi.ai", Personal: []string{"DOMAIN-SUFFIX,kimi.ai,DIRECT"}, Target: "DIRECT", Provider: "personal"},
+	}
+	if err = checkFixtures(b, fixtures); err != nil {
+		t.Fatal(err)
+	}
+	dir := filepath.Join(t.TempDir(), "dist")
+	if err = writeBundle(dir, b); err != nil {
+		t.Fatal(err)
+	}
+	for name, schema := range map[string]int{"manifest.json": 1, "manifest-v2.json": 2} {
+		data, err := os.ReadFile(filepath.Join(dir, name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		var manifest Manifest
+		if err = readJSON(data, &manifest); err != nil {
+			t.Fatal(err)
+		}
+		if manifest.SchemaVersion != schema || manifest.Version != b.Manifest.Version {
+			t.Fatal("incompatible manifest version")
+		}
+		found := false
+		for _, artifact := range manifest.Files {
+			if artifact.ID == "app-proxy" {
+				found = true
+				if artifact.Behavior != "classical" || artifact.Format != "yaml" {
+					t.Fatal("incorrect application format")
+				}
+			}
+			if schema == 1 && artifact.Path == "routing-v2.json" {
+				t.Fatal("v2 routing leaked into legacy manifest")
+			}
+		}
+		if found != (schema == 2) {
+			t.Fatal("application set compatibility mismatch")
+		}
+	}
+	var legacy Routing
+	if err = readJSON(b.Files["routing.json"], &legacy); err != nil {
+		t.Fatal(err)
+	}
+	for _, route := range legacy.Rules {
+		if route.Provider == "app-proxy" {
+			t.Fatal("application route leaked into v1")
+		}
+	}
+	if _, err = loadBundle(dir); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestClassicalPayloadValidation(t *testing.T) {
+	entries, err := normalize("classical", []string{"PROCESS-NAME,com.example.ai", "PROCESS-NAME,com.example.ai"})
+	if err != nil || len(entries) != 1 {
+		t.Fatalf("valid process payload rejected: %v %v", entries, err)
+	}
+	for _, line := range []string{"PROCESS-NAME,com.example.ai,Proxy", "PROCESS-NAME,", "MATCH,Proxy", "RULE-SET,other", "UNKNOWN,com.example.ai"} {
+		if _, err = normalize("classical", []string{line}); err == nil {
+			t.Fatalf("invalid classical payload accepted: %s", line)
+		}
+	}
+	if _, err = compileMRS("classical", entries); err == nil {
+		t.Fatal("classical MRS accepted")
+	}
+}
+
+func TestGeneratorFingerprintNormalizesLineEndings(t *testing.T) {
+	dir := t.TempDir()
+	files := map[string]string{"main.go": "package main\n", "go.mod": "module test\n", "go.sum": "hash\n"}
+	for name, data := range files {
+		if err := os.WriteFile(filepath.Join(dir, name), []byte(data), 0644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	first, err := generatorFingerprint(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for name, data := range files {
+		if err := os.WriteFile(filepath.Join(dir, name), []byte(strings.ReplaceAll(data, "\n", "\r\n")), 0644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	second, err := generatorFingerprint(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if first != second {
+		t.Fatal("checkout line endings changed the generator identity")
+	}
 }
 
 func TestServiceCategories(t *testing.T) {

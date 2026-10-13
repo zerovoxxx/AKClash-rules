@@ -1,4 +1,7 @@
 # Explicit service corrections; personal domains and account data are excluded.
+app-proxy:
+  add:
+  - PROCESS-NAME,com.openai.chatgpt
 ai-cn-domain:
   add:
   - +.kimi.ai

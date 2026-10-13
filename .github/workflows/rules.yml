@@ -47,9 +47,11 @@ jobs:
         working-directory: generator
         run: |
           cp ../dist/manifest.json "$RUNNER_TEMP/first-manifest.json"
+          cp ../dist/manifest-v2.json "$RUNNER_TEMP/first-manifest-v2.json"
           go run . build
           go run . check
           cmp ../dist/manifest.json "$RUNNER_TEMP/first-manifest.json"
+          cmp ../dist/manifest-v2.json "$RUNNER_TEMP/first-manifest-v2.json"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: rules-bundle

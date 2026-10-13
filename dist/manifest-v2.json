@@ -1,0 +1,281 @@
+{
+  "schema_version": 2,
+  "version": "rules-45b7cdff5e1736acab4ad73a",
+  "repository": "zerovoxxx/AKClash-rules",
+  "kernel_revision": "70f0570405c3c2c47bb113b88db95006d239b346",
+  "generator_sha256": "62c689b477bb5db91f8a5bea182b3b66b66d5b7aaa5e570c8b7f1429816c1c25",
+  "files": [
+    {
+      "path": "licenses/MetaCubeX-GPL-3.0.txt",
+      "asset": "MetaCubeX-GPL-3.0.txt",
+      "format": "text",
+      "bytes": 35823,
+      "sha256": "230184f60bae2feaf244f10a8bac053c8ff33a183bcc365b4d8b876d2b7f4809"
+    },
+    {
+      "path": "licenses/NOTICE.md",
+      "asset": "NOTICE.md",
+      "format": "text",
+      "bytes": 1726,
+      "sha256": "af9bd67ea5cac1a67376a37bd12ac9694b99e3bf32cc43d1a5c69b597efaa1f7"
+    },
+    {
+      "path": "licenses/blackmatrix7-GPL-2.0.txt",
+      "asset": "blackmatrix7-GPL-2.0.txt",
+      "format": "text",
+      "bytes": 18431,
+      "sha256": "189b1af95d661151e054cea10c91b3d754e4de4d3fecfb074c1fb29476f7167b"
+    },
+    {
+      "path": "mrs/ai-cn-domain.mrs",
+      "asset": "ai-cn-domain.mrs",
+      "id": "ai-cn-domain",
+      "behavior": "domain",
+      "format": "mrs",
+      "count": 117,
+      "bytes": 1128,
+      "sha256": "af7ceefb37d7e438eb337a66ac385d0ade581f7ef29a3a44549b25f2ba3b9cdd"
+    },
+    {
+      "path": "mrs/ai-proxy-domain.mrs",
+      "asset": "ai-proxy-domain.mrs",
+      "id": "ai-proxy-domain",
+      "behavior": "domain",
+      "format": "mrs",
+      "count": 84,
+      "bytes": 1113,
+      "sha256": "bb2ad1f1bd0a8393a7aaa5882b7ac69590d06b45485079d92c573c0e4d882e9d"
+    },
+    {
+      "path": "mrs/chat-domain.mrs",
+      "asset": "chat-domain.mrs",
+      "id": "chat-domain",
+      "behavior": "domain",
+      "format": "mrs",
+      "count": 21,
+      "bytes": 274,
+      "sha256": "ffa4d1d3e8649965e529c1c570d8add75a0d6f70aa8503ece8add841ce48c0e7"
+    },
+    {
+      "path": "mrs/chat-ip.mrs",
+      "asset": "chat-ip.mrs",
+      "id": "chat-ip",
+      "behavior": "ipcidr",
+      "format": "mrs",
+      "count": 12,
+      "bytes": 145,
+      "sha256": "d121af95b9aeca3d8c29b2112d5e6685b2a6716383df8ae31b5fbb3408c527b3"
+    },
+    {
+      "path": "mrs/cn-domain.mrs",
+      "asset": "cn-domain.mrs",
+      "id": "cn-domain",
+      "behavior": "domain",
+      "format": "mrs",
+      "count": 111021,
+      "bytes": 538484,
+      "sha256": "e382b21f7a213a99ce104dfac38fee1f723a39fe7f6133c28d2b20efa6d64539"
+    },
+    {
+      "path": "mrs/cn-ip.mrs",
+      "asset": "cn-ip.mrs",
+      "id": "cn-ip",
+      "behavior": "ipcidr",
+      "format": "mrs",
+      "count": 9647,
+      "bytes": 37852,
+      "sha256": "b2d526c3858f84a85ad1ccd5161a031284ad485013623e0d684cceb853eb2d86"
+    },
+    {
+      "path": "mrs/platform-direct-domain.mrs",
+      "asset": "platform-direct-domain.mrs",
+      "id": "platform-direct-domain",
+      "behavior": "domain",
+      "format": "mrs",
+      "count": 11,
+      "bytes": 179,
+      "sha256": "2e71f871d88b4962f9ed91bed1c9b90593108aceb47f3263bff4af6181aae86b"
+    },
+    {
+      "path": "mrs/platform-direct-ip.mrs",
+      "asset": "platform-direct-ip.mrs",
+      "id": "platform-direct-ip",
+      "behavior": "ipcidr",
+      "format": "mrs",
+      "count": 1,
+      "bytes": 48,
+      "sha256": "02bbc25da607152726caee9d2b5924548b8e7859b990de6f8f1da6e01bb81b9b"
+    },
+    {
+      "path": "mrs/private-domain.mrs",
+      "asset": "private-domain.mrs",
+      "id": "private-domain",
+      "behavior": "domain",
+      "format": "mrs",
+      "count": 130,
+      "bytes": 742,
+      "sha256": "0f9ba48d4d0b0d192a4e7c3548486dde05e5a92e6e58e8ea8c9cc302712a1420"
+    },
+    {
+      "path": "mrs/private-ip.mrs",
+      "asset": "private-ip.mrs",
+      "id": "private-ip",
+      "behavior": "ipcidr",
+      "format": "mrs",
+      "count": 18,
+      "bytes": 155,
+      "sha256": "076ea1da10b442f01c6fb3b86a66411727a15df69d70e8d600a8a458b07a8bb0"
+    },
+    {
+      "path": "mrs/proxy-domain.mrs",
+      "asset": "proxy-domain.mrs",
+      "id": "proxy-domain",
+      "behavior": "domain",
+      "format": "mrs",
+      "count": 1224,
+      "bytes": 10501,
+      "sha256": "f65e5a3f5ac7e34cbfcad11cfc289b7598093e05a062b09c675306943fb73c06"
+    },
+    {
+      "path": "routing-v2.json",
+      "asset": "routing-v2.json",
+      "format": "json",
+      "bytes": 1374,
+      "sha256": "6e2c1a7b23f12c2b5a81e399da5802376be4534f3c8bbb3d57017f718b2deb2e"
+    },
+    {
+      "path": "routing.json",
+      "asset": "routing.json",
+      "format": "json",
+      "bytes": 1280,
+      "sha256": "5c482916dd640d11f43b639cfa8d3f1dc074ee157308667da96077ab11b03afd"
+    },
+    {
+      "path": "sources.lock.json",
+      "asset": "sources.lock.json",
+      "format": "json",
+      "bytes": 6601,
+      "sha256": "fec3ff730b11f032d18e79d0b8162490722d16a129cd72c36d67f1153b93a5ad"
+    },
+    {
+      "path": "yaml/ai-cn-domain.yaml",
+      "asset": "ai-cn-domain.yaml",
+      "id": "ai-cn-domain",
+      "behavior": "domain",
+      "format": "yaml",
+      "count": 117,
+      "bytes": 2451,
+      "sha256": "2d5ba46abde6aa3c8680b6f631510bac6b0fd0ca82cf56cdc7140b8aaaaf8d06"
+    },
+    {
+      "path": "yaml/ai-proxy-domain.yaml",
+      "asset": "ai-proxy-domain.yaml",
+      "id": "ai-proxy-domain",
+      "behavior": "domain",
+      "format": "yaml",
+      "count": 84,
+      "bytes": 2506,
+      "sha256": "c362f4b40e89e248cd4ae03dda0fc81afde9c7ff88b94c6ebbab816f52e51577"
+    },
+    {
+      "path": "yaml/app-proxy.yaml",
+      "asset": "app-proxy.yaml",
+      "id": "app-proxy",
+      "behavior": "classical",
+      "format": "yaml",
+      "count": 1,
+      "bytes": 47,
+      "sha256": "091d8023b75b2740c04c8adb8cea28952870ef5e7aada17e4d8a0a8e9a99a6b1"
+    },
+    {
+      "path": "yaml/chat-domain.yaml",
+      "asset": "chat-domain.yaml",
+      "id": "chat-domain",
+      "behavior": "domain",
+      "format": "yaml",
+      "count": 21,
+      "bytes": 429,
+      "sha256": "578604ac767041a7ebd1b08592ac4320f0df62af32ad5c49debea0bd87b61861"
+    },
+    {
+      "path": "yaml/chat-ip.yaml",
+      "asset": "chat-ip.yaml",
+      "id": "chat-ip",
+      "behavior": "ipcidr",
+      "format": "yaml",
+      "count": 12,
+      "bytes": 274,
+      "sha256": "ae287bfd32b491ce4e6734df5a2c0a27e5856f18c2aff63d45a975a7cfdb1a61"
+    },
+    {
+      "path": "yaml/cn-domain.yaml",
+      "asset": "cn-domain.yaml",
+      "id": "cn-domain",
+      "behavior": "domain",
+      "format": "yaml",
+      "count": 111021,
+      "bytes": 2293742,
+      "sha256": "00fd9446ffc3eb708c8e3a61da3835f1bcc3eb7e45c4f13c7f9cf2f64c070a0a"
+    },
+    {
+      "path": "yaml/cn-ip.yaml",
+      "asset": "cn-ip.yaml",
+      "id": "cn-ip",
+      "behavior": "ipcidr",
+      "format": "yaml",
+      "count": 9647,
+      "bytes": 211504,
+      "sha256": "7a0aa101e6edca38b440cafb4c7369ce91bf24742fab7ae25391e690009fc8e4"
+    },
+    {
+      "path": "yaml/platform-direct-domain.yaml",
+      "asset": "platform-direct-domain.yaml",
+      "id": "platform-direct-domain",
+      "behavior": "domain",
+      "format": "yaml",
+      "count": 11,
+      "bytes": 248,
+      "sha256": "8ddf4c5d7b4b0daa66dfffb8b160c29c7331c388196297ef208fce6e042c50d1"
+    },
+    {
+      "path": "yaml/platform-direct-ip.yaml",
+      "asset": "platform-direct-ip.yaml",
+      "id": "platform-direct-ip",
+      "behavior": "ipcidr",
+      "format": "yaml",
+      "count": 1,
+      "bytes": 26,
+      "sha256": "1fdf5146f069890d5a1423bfc5e95ea9e3bbeba1a2482fb9b7e7533076ca8ab4"
+    },
+    {
+      "path": "yaml/private-domain.yaml",
+      "asset": "private-domain.yaml",
+      "id": "private-domain",
+      "behavior": "domain",
+      "format": "yaml",
+      "count": 130,
+      "bytes": 3478,
+      "sha256": "d26f1f983d63eb27c6d7b27e0d1ce5ffcfbad30a52af732f195cdd5f71fc69c2"
+    },
+    {
+      "path": "yaml/private-ip.yaml",
+      "asset": "private-ip.yaml",
+      "id": "private-ip",
+      "behavior": "ipcidr",
+      "format": "yaml",
+      "count": 18,
+      "bytes": 341,
+      "sha256": "9458dee54d7d70c7710478d36aa106d948eac35a9086702e034acc4132ab42e6"
+    },
+    {
+      "path": "yaml/proxy-domain.yaml",
+      "asset": "proxy-domain.yaml",
+      "id": "proxy-domain",
+      "behavior": "domain",
+      "format": "yaml",
+      "count": 1224,
+      "bytes": 29225,
+      "sha256": "a1a2fad15af63b9939f7e17c4b2c85484f0a613df9f72a0ddbe02fcaa3bb2cf4"
+    }
+  ]
+}

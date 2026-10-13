@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 repository: zerovoxxx/AKClash-rules
 sources:
 - id: private-domain
@@ -110,6 +110,9 @@ sources:
   behavior: ipcidr
   min_rules: 5
 packages:
+- id: app-proxy
+  behavior: classical
+  sources: []
 - id: private-domain
   behavior: domain
   sources:
@@ -171,6 +174,9 @@ routing:
   no_resolve: true
 - type: personal
 - type: remote
+- type: rule-set
+  provider: app-proxy
+  target: Proxy
 - type: rule-set
   provider: ai-cn-domain
   target: DIRECT

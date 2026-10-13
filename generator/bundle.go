@@ -99,7 +99,7 @@ var revisionPattern = regexp.MustCompile(`^[a-f0-9]{40}$`)
 var hashPattern = regexp.MustCompile(`^[a-f0-9]{64}$`)
 
 func validateConfig(cfg Config) error {
-	if cfg.SchemaVersion != 1 || !repositoryName.MatchString(cfg.Repository) {
+	if (cfg.SchemaVersion != 1 && cfg.SchemaVersion != 2) || !repositoryName.MatchString(cfg.Repository) {
 		return errors.New("unsupported schema or invalid repository")
 	}
 	sources := map[string]Source{}
@@ -107,7 +107,7 @@ func validateConfig(cfg Config) error {
 		if !identifier.MatchString(s.ID) || !repositoryName.MatchString(s.Repository) || !safePath(s.Path) || strings.HasPrefix(s.Ref, "-") || s.Ref == "" || s.MinRules < 1 {
 			return fmt.Errorf("invalid source %q", s.ID)
 		}
-		if s.Behavior != "domain" && s.Behavior != "ipcidr" {
+		if s.Behavior != "domain" && s.Behavior != "ipcidr" && !(cfg.SchemaVersion == 2 && s.Behavior == "classical") {
 			return fmt.Errorf("invalid source behavior: %s", s.ID)
 		}
 		if _, found := sources[s.ID]; found {
@@ -117,7 +117,7 @@ func validateConfig(cfg Config) error {
 	}
 	packages := map[string]Package{}
 	for _, p := range cfg.Packages {
-		if !identifier.MatchString(p.ID) || (p.Behavior != "domain" && p.Behavior != "ipcidr") {
+		if !identifier.MatchString(p.ID) || (p.Behavior != "domain" && p.Behavior != "ipcidr" && !(cfg.SchemaVersion == 2 && p.Behavior == "classical")) {
 			return fmt.Errorf("invalid package %q", p.ID)
 		}
 		if _, found := packages[p.ID]; found {
@@ -201,7 +201,7 @@ func generate(cfg Config, patches map[string]Patch, lock Lock, inputs map[string
 		}
 		parsed[src.ID] = entries
 	}
-	b := &Bundle{Manifest: Manifest{SchemaVersion: 1, Repository: cfg.Repository, KernelRevision: kernelRevision, GeneratorSHA256: generatorHash}, Files: map[string][]byte{}}
+	b := &Bundle{Manifest: Manifest{SchemaVersion: cfg.SchemaVersion, Repository: cfg.Repository, KernelRevision: kernelRevision, GeneratorSHA256: generatorHash}, Files: map[string][]byte{}}
 	known := map[string]bool{}
 	for _, p := range cfg.Packages {
 		known[p.ID] = true
@@ -213,19 +213,26 @@ func generate(cfg Config, patches map[string]Patch, lock Lock, inputs map[string
 		if err != nil {
 			return nil, fmt.Errorf("package %s: %w", p.ID, err)
 		}
-		mrs, err := compileMRS(p.Behavior, entries)
-		if err != nil {
-			return nil, fmt.Errorf("package %s: %w", p.ID, err)
-		}
 		b.add("yaml/"+p.ID+".yaml", payloadYAML(entries), p.ID, p.Behavior, "yaml", len(entries))
-		b.add("mrs/"+p.ID+".mrs", mrs, p.ID, p.Behavior, "mrs", len(entries))
+		if p.Behavior != "classical" {
+			mrs, err := compileMRS(p.Behavior, entries)
+			if err != nil {
+				return nil, fmt.Errorf("package %s: %w", p.ID, err)
+			}
+			b.add("mrs/"+p.ID+".mrs", mrs, p.ID, p.Behavior, "mrs", len(entries))
+		}
 	}
 	for id := range patches {
 		if !known[id] {
 			return nil, fmt.Errorf("unknown patch package %s", id)
 		}
 	}
-	b.add("routing.json", jsonBytes(Routing{SchemaVersion: 1, Rules: cfg.Routing}), "", "", "json", 0)
+	legacyRoutes := cfg.Routing
+	if cfg.SchemaVersion == 2 {
+		b.add("routing-v2.json", jsonBytes(Routing{SchemaVersion: 2, Rules: cfg.Routing}), "", "", "json", 0)
+		legacyRoutes = legacyRouting(cfg.Routing, cfg.Packages)
+	}
+	b.add("routing.json", jsonBytes(Routing{SchemaVersion: 1, Rules: legacyRoutes}), "", "", "json", 0)
 	b.add("sources.lock.json", jsonBytes(lock), "", "", "json", 0)
 	sort.Slice(b.Manifest.Files, func(i, j int) bool { return b.Manifest.Files[i].Path < b.Manifest.Files[j].Path })
 	b.Manifest.Version = bundleVersion(b.Manifest)
@@ -235,6 +242,32 @@ func generate(cfg Config, patches map[string]Patch, lock Lock, inputs map[string
 func (b *Bundle) add(name string, data []byte, id, behavior, format string, count int) {
 	b.Files[name] = data
 	b.Manifest.Files = append(b.Manifest.Files, Artifact{Path: name, Asset: path.Base(name), ID: id, Behavior: behavior, Format: format, Count: count, Bytes: int64(len(data)), SHA256: digest(data)})
+}
+
+func legacyRouting(routes []Route, packages []Package) []Route {
+	classical := map[string]bool{}
+	for _, p := range packages {
+		classical[p.ID] = p.Behavior == "classical"
+	}
+	var legacy []Route
+	for _, route := range routes {
+		if !classical[route.Provider] {
+			legacy = append(legacy, route)
+		}
+	}
+	return legacy
+}
+
+func legacyManifest(b *Bundle) Manifest {
+	m := b.Manifest
+	m.SchemaVersion = 1
+	m.Files = nil
+	for _, artifact := range b.Manifest.Files {
+		if artifact.Behavior != "classical" && artifact.Path != "routing-v2.json" {
+			m.Files = append(m.Files, artifact)
+		}
+	}
+	return m
 }
 
 func bundleVersion(m Manifest) string {
@@ -253,7 +286,11 @@ func bundleVersion(m Manifest) string {
 
 func checkFixtures(b *Bundle, fixtures []Fixture) error {
 	var routing Routing
-	if err := json.Unmarshal(b.Files["routing.json"], &routing); err != nil {
+	routingFile := "routing.json"
+	if b.Manifest.SchemaVersion == 2 {
+		routingFile = "routing-v2.json"
+	}
+	if err := json.Unmarshal(b.Files[routingFile], &routing); err != nil {
 		return err
 	}
 	if len(fixtures) == 0 {
@@ -262,12 +299,12 @@ func checkFixtures(b *Bundle, fixtures []Fixture) error {
 	for _, format := range []string{"yaml", "mrs"} {
 		matchers := map[string]ruleMatcher{}
 		for _, f := range b.Manifest.Files {
-			if f.Format != format {
+			if f.ID == "" || (f.Format != format && !(f.Behavior == "classical" && f.Format == "yaml")) {
 				continue
 			}
 			var m ruleMatcher
 			var err error
-			if format == "mrs" {
+			if f.Format == "mrs" {
 				m, err = readMRS(f.Behavior, b.Files[f.Path])
 			} else {
 				var entries []string

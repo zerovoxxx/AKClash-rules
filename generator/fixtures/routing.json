@@ -1,4 +1,9 @@
 [
+  {"name": "ChatGPT application main domain", "process": "com.openai.chatgpt", "host": "android.chat.openai.com", "target": "Proxy", "provider": "app-proxy"},
+  {"name": "ChatGPT application third-party domain", "process": "com.openai.chatgpt", "host": "api.deepseek.com", "target": "Proxy", "provider": "app-proxy"},
+  {"name": "ChatGPT application IP-only", "process": "com.openai.chatgpt", "ip": "8.8.8.8", "target": "Proxy", "provider": "app-proxy"},
+  {"name": "Other application keeps domestic routing", "process": "com.example.other", "host": "api.deepseek.com", "target": "DIRECT", "provider": "ai-cn-domain"},
+  {"name": "ChatGPT application personal override", "process": "com.openai.chatgpt", "host": "android.chat.openai.com", "personal": ["DOMAIN-SUFFIX,openai.com,DIRECT"], "target": "DIRECT", "provider": "personal"},
   {
     "name": "Domestic AI: api.deepseek.com",
     "host": "api.deepseek.com",

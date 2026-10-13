@@ -164,6 +164,8 @@ func generatorFingerprint(root string) (string, error) {
 		if err != nil {
 			return "", err
 		}
+		// A Windows checkout and Linux CI must identify the same source bytes.
+		data = bytes.ReplaceAll(data, []byte("\r\n"), []byte("\n"))
 		fmt.Fprintf(&input, "%s\x00%s\n", filepath.Base(name), digest(data))
 	}
 	return digest(input.Bytes()), nil
@@ -292,7 +294,7 @@ func fetchSources(lock *Lock, cache string, update bool) (map[string][]byte, err
 
 func validateBundle(b *Bundle) error {
 	m := b.Manifest
-	if m.SchemaVersion != 1 || m.KernelRevision != kernelRevision || !repositoryName.MatchString(m.Repository) || m.Version != bundleVersion(m) {
+	if (m.SchemaVersion != 1 && m.SchemaVersion != 2) || m.KernelRevision != kernelRevision || !repositoryName.MatchString(m.Repository) || m.Version != bundleVersion(m) {
 		return errors.New("invalid manifest schema, compatibility or version")
 	}
 	seen, assets, packages, formats := map[string]bool{}, map[string]bool{}, map[string]Package{}, map[string]map[string]bool{}
@@ -306,6 +308,9 @@ func validateBundle(b *Bundle) error {
 			return fmt.Errorf("artifact integrity mismatch: %s", f.Path)
 		}
 		if f.Format == "yaml" || f.Format == "mrs" {
+			if f.Behavior == "classical" && (m.SchemaVersion != 2 || f.Format != "yaml") {
+				return errors.New("classical rules require schema 2 YAML")
+			}
 			if !identifier.MatchString(f.ID) || f.Count <= 0 || f.Path != f.Format+"/"+f.ID+"."+f.Format {
 				return errors.New("invalid rule artifact metadata")
 			}
@@ -335,22 +340,45 @@ func validateBundle(b *Bundle) error {
 		return errors.New("missing or unlisted artifact")
 	}
 	for id, formats := range formats {
-		if !formats["yaml"] || !formats["mrs"] {
+		if !formats["yaml"] || (packages[id].Behavior != "classical" && !formats["mrs"]) {
 			return fmt.Errorf("missing format for %s", id)
 		}
 	}
 	var routing Routing
-	if err := readJSON(b.Files["routing.json"], &routing); err != nil {
+	routingFile := "routing.json"
+	if m.SchemaVersion == 2 {
+		routingFile = "routing-v2.json"
+	}
+	if err := readJSON(b.Files[routingFile], &routing); err != nil {
 		return err
 	}
-	if routing.SchemaVersion != 1 {
+	if routing.SchemaVersion != m.SchemaVersion {
 		return errors.New("unsupported routing schema")
 	}
-	return validateRouting(routing.Rules, packages)
+	if err := validateRouting(routing.Rules, packages); err != nil {
+		return err
+	}
+	if m.SchemaVersion == 2 {
+		var legacy Routing
+		if err := readJSON(b.Files["routing.json"], &legacy); err != nil {
+			return err
+		}
+		var definitions []Package
+		for _, p := range packages {
+			definitions = append(definitions, p)
+		}
+		if legacy.SchemaVersion != 1 || !bytes.Equal(jsonBytes(legacy.Rules), jsonBytes(legacyRouting(routing.Rules, definitions))) {
+			return errors.New("legacy routing does not match v2 bundle")
+		}
+	}
+	return nil
 }
 
 func loadBundle(dir string) (*Bundle, error) {
-	data, err := os.ReadFile(filepath.Join(dir, "manifest.json"))
+	data, err := os.ReadFile(filepath.Join(dir, "manifest-v2.json"))
+	if os.IsNotExist(err) {
+		data, err = os.ReadFile(filepath.Join(dir, "manifest.json"))
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -369,6 +397,19 @@ func loadBundle(dir string) (*Bundle, error) {
 	}
 	if err = validateBundle(b); err != nil {
 		return nil, err
+	}
+	if b.Manifest.SchemaVersion == 2 {
+		data, err := os.ReadFile(filepath.Join(dir, "manifest.json"))
+		if err != nil {
+			return nil, err
+		}
+		var legacy Manifest
+		if err = readJSON(data, &legacy); err != nil {
+			return nil, err
+		}
+		if !bytes.Equal(jsonBytes(legacy), jsonBytes(legacyManifest(b))) {
+			return nil, errors.New("legacy manifest does not match v2 bundle")
+		}
 	}
 	return b, nil
 }
@@ -411,7 +452,12 @@ func writeBundle(dir string, b *Bundle) error {
 			return err
 		}
 	}
-	if err = os.WriteFile(filepath.Join(stage, "manifest.json"), jsonBytes(b.Manifest), 0644); err != nil {
+	if b.Manifest.SchemaVersion == 2 {
+		if err = os.WriteFile(filepath.Join(stage, "manifest-v2.json"), jsonBytes(b.Manifest), 0644); err != nil {
+			return err
+		}
+	}
+	if err = os.WriteFile(filepath.Join(stage, "manifest.json"), jsonBytes(legacyManifest(b)), 0644); err != nil {
 		return err
 	}
 	backup := stage + "-previous"

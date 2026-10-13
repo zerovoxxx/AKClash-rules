@@ -26,8 +26,10 @@ AKClash-rules/
 │  ├─ licenses/                   上游许可证及来源说明
 │  └─ publish.sh                  完整校验后发布 GitHub Release
 └─ dist/                          最终产物：消费方无需运行生成器
-   ├─ manifest.json               版本、文件索引、条数、大小和 SHA-256
-   ├─ routing.json                有序路由、个人规则和远程集插入位置
+   ├─ manifest.json               schema 1 兼容清单，保留旧客户端入口
+   ├─ manifest-v2.json            schema 2 完整清单，含应用包名集合
+   ├─ routing.json                schema 1 有序路由
+   ├─ routing-v2.json             schema 2 路由及应用集合插入位置
    ├─ sources.lock.json           本次产物的来源快照
    ├─ yaml/                      可读的规范化规则
    ├─ mrs/                       可供 mihomo 使用的二进制规则
@@ -41,6 +43,7 @@ AKClash-rules/
 | 类别 | 产物 ID | 首版内容 | 默认出口 |
 | --- | --- | --- | --- |
 | 私有网络 | `private-domain`、`private-ip` | 私有域名与 IPv4/IPv6 | DIRECT |
+| 应用代理 | `app-proxy` | Android 包名匹配，当前包含 ChatGPT；classical YAML | Proxy |
 | 国内 AI | `ai-cn-domain` | 国内 AI 分类，加 Kimi/Moonshot 补充 | DIRECT |
 | 海外 AI | `ai-proxy-domain` | OpenAI、Claude、Gemini、Copilot、Grok | Proxy |
 | 聊天通信 | `chat-domain`、`chat-ip` | 首版来源为 Telegram 域名与 IPv4/IPv6 | Proxy |
@@ -50,7 +53,9 @@ AKClash-rules/
 
 按用途分类，具体软件只作为来源，不以 `telegram` 命名公开产物。聊天通信统一归入 chat 类别；域名产物为 `yaml/chat-domain.yaml`，IP 产物为 `yaml/chat-ip.yaml`，对应 `mrs/chat-domain.mrs` 与 `mrs/chat-ip.mrs`。MRS 只支持分别存储 domain 或 ipcidr，因此同一类别保留这两种文件；新增聊天服务可扩充该类别的来源。目前不表示已覆盖所有聊天软件。
 
-产物统一使用 `<类别>-domain.yaml` / `<类别>-ip.yaml`，MRS 使用同名 `.mrs`，清单 ID 与文件名一致。`-ip` 对应 `behavior: ipcidr`，同一文件同时包含 IPv4/IPv6；上游来源 ID 不属于消费接口，继续保留原来源标识。
+域名/IP 产物使用 `<类别>-domain.yaml` / `<类别>-ip.yaml`，MRS 使用同名 `.mrs`，清单 ID 与文件名一致。`-ip` 对应 `behavior: ipcidr`，同一文件同时包含 IPv4/IPv6；上游来源 ID 不属于消费接口，继续保留原来源标识。`yaml/app-proxy.yaml` 使用 `behavior: classical`，只生成 YAML，不生成 MRS。
+
+应用包名在 [overrides/rules.yaml](generator/overrides/rules.yaml) 的 `app-proxy.add` 中维护，例如 `PROCESS-NAME,com.openai.chatgpt`。payload 不带出口；由 `RULE-SET,app-proxy,Proxy` 统一指定。应用集合位于私网、个人规则和既有远程集合之后、默认直连分类之前。新版 Android 客户端不保存 ChatGPT 包名；后续修改规则输入并发布新规则版本即可更新包名列表，集合保持非空。
 
 域名和 IP **可以**写进一个 `behavior: classical` 的 YAML，例如：
 
@@ -91,9 +96,9 @@ bash -n publish.sh
 1. 固定来源仓库、提交和路径，验证 HTTPS 下载、大小与内容 SHA-256。
 2. 严格解析非空 YAML payload，拒绝非字符串、错误域名/CIDR、混合类型及低于最低条数的输入。
 3. 应用补充与排除，规范化、排序和去重，保留精确域名/后缀以及 IPv4/IPv6 语义。
-4. 生成可读 YAML，再使用固定内核的转换器编译 MRS。内核依赖与当前 Android 源码基线相同：`chen08209/Clash.Meta@70f0570405c3c2c47bb113b88db95006d239b346`。
-5. 分别载入生成的 YAML 和 MRS，以内核匹配能力核对第一命中和目标出口；验证国内/海外 AI、聊天域名/IP、个人及远程例外、平台冲突、局域网、解析后的 IP、IPv6 和最终兜底。
-6. 生成 manifest，记录 schema、内核提交、生成器哈希和每个文件的类型、条数、字节数及 SHA-256。全部验证成功后替换 `dist/`；失败保留原产物。
+4. 生成可读 YAML，再将 domain/ipcidr 编译 MRS；classical 使用 YAML。固定内核与当前 Android 基线相同：`chen08209/Clash.Meta@70f0570405c3c2c47bb113b88db95006d239b346`。
+5. 分别验证全 YAML 与 MRS＋classical YAML 两条消费路径，用实际内核核对第一命中和出口；覆盖应用域名/第三方/纯 IP、其他应用、国内/海外 AI、聊天、个人及远程例外、平台冲突、私网、IPv6 和兜底。
+6. 生成完整 v2 清单和 v1 兼容清单，记录内核、生成器和文件的类型、条数、大小、SHA-256。v1 排除 classical 和 v2 路由，两个清单共享同一 Release 标签；版本由 v2 完整内容计算。全部验证成功后原子替换 `dist/`；失败保留原产物。
 
 修正规则应编辑来源或修订输入，再重新生成，不手改 `dist/`。新增类别还需要配置其路由位置和匹配样例。格式约束见 [mihomo 规则集合文档](https://wiki.metacubex.one/config/rule-providers/)。
 
@@ -122,16 +127,16 @@ rules:
   - RULE-SET,chat-ip,Proxy
 ```
 
-这只是聊天类别的引用示例，需要消费方已有 `Proxy` 节点组；完整顺序见 [dist/routing.json](dist/routing.json)。`routing.json` 是供客户端组装配置的数据契约，不是可直接导入的完整 Clash 配置。YAML 和 MRS 是相同规则的两种表示，消费方选择一种即可。
+这只是聊天类别的引用示例，需要消费方已有 `Proxy` 节点组。应用集合使用 `path: ./dist/yaml/app-proxy.yaml`、`behavior: classical`、`format: yaml`，引用为 `RULE-SET,app-proxy,Proxy`。完整 v2 顺序见 [dist/routing-v2.json](dist/routing-v2.json)，旧版顺序见 [dist/routing.json](dist/routing.json)。路由 JSON 是供客户端组装的数据契约，不是完整 Clash 配置；domain/ipcidr 的 YAML 和 MRS 表示相同规则，classical 只提供 YAML。
 
-计划中的 Android 消费方式：
+Android 消费端代码的对应契约（首次启用应用集合仍须升级 App）：
 
-1. 内置稳定入口：`https://github.com/zerovoxxx/AKClash-rules/releases/latest/download/manifest.json`。
+1. 新版入口为 `https://github.com/zerovoxxx/AKClash-rules/releases/latest/download/manifest-v2.json`；旧 Android 和桌面继续使用原 `manifest.json`。新版兼容旧缓存，v2 入口明确 HTTP 404 时回退旧入口；其他校验或网络错误保留既有有效缓存。
 2. 读取清单中的 `version` 后，固定从 `https://github.com/zerovoxxx/AKClash-rules/releases/download/<version>/<asset>` 获取该版本所需文件，不逐个追踪 latest。
 3. 检查支持的 schema、固定仓库、类型、大小、SHA-256 和路由引用，候选版本全部通过后再切换；失败继续使用随包或上一有效版本。
-4. 应用运行时每 24 小时检查，回前台补检查，支持手动刷新。应用关闭时不承诺定时执行。全局规则由应用下载，内核通过 file Provider 读取，避免双重更新。
+4. Android 运行时每 30 分钟检查，回前台补检查，支持手动刷新；应用关闭时不承诺定时执行。domain/ipcidr 下载 MRS，classical 下载 YAML，均由应用校验并通过 file Provider 交给内核。
 
-规则内容及已有类型下的分类调整不需要发布新版 App；新 schema、规则格式或执行能力需要客户端适配。哈希用于完整性检查，不等同于独立的发布者签名。上述 Android 消费流程尚未实现。
+已有集合中的规则内容修改不需要再次升级已支持该格式的 App；新的 schema、集合格式或执行能力仍需要适配。完整 v2 清单和旧兼容清单同时发布，避免让旧客户端拒绝整包更新。哈希用于完整性检查，不等同于独立的发布者签名。
 
 ## 自动验证与发布
 
@@ -139,6 +144,6 @@ rules:
 
 检查顺序为测试/静态检查 → 按提交中的锁重建并比对基线 → 非 PR 更新来源 → 再次重建核对一致性 → 上传产物 → 发布。发布脚本还需要 Python 3.9+ 和 GitHub CLI，CI 使用仓库自带的 `GITHUB_TOKEN`。
 
-发布先验证所有文件和哈希，再创建 draft Release；资产全部上传成功后才设为公开和 latest。失败保留 draft，不替换已公开版本；相同内容版本已发布时只校验后退出。发布脚本不会覆盖已公开 Release 的资产。执行结果可在仓库 [Actions](https://github.com/zerovoxxx/AKClash-rules/actions) 查看。
+发布先验证两份清单的关系及所有文件哈希，再创建 draft Release；两份清单和共享资产全部上传成功后才设为公开和 latest。失败保留 draft，不替换公开版本；已有版本同时核对两份清单后退出，不覆盖公开资产。CI 同时比较两份清单的重复构建结果。执行结果可在仓库 [Actions](https://github.com/zerovoxxx/AKClash-rules/actions) 查看。
 
 生成器代码按 [GPL-3.0](LICENSE) 分发；规则数据保留各自上游许可和来源，见 [来源与许可说明](generator/licenses/NOTICE.md)。许可证和来源锁随每个规则版本一起交付。
