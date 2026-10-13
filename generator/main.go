@@ -115,16 +115,8 @@ func run(command string) error {
 	if err != nil {
 		return err
 	}
-	licenseFiles, err := filepath.Glob(filepath.Join(root, "licenses", "*"))
-	if err != nil || len(licenseFiles) == 0 {
-		return errors.New("missing source license notices")
-	}
-	for _, name := range licenseFiles {
-		data, err := os.ReadFile(name)
-		if err != nil {
-			return err
-		}
-		b.add("licenses/"+filepath.Base(name), data, "", "", "text", 0)
+	if err = addLicenses(b, root); err != nil {
+		return err
 	}
 	sort.Slice(b.Manifest.Files, func(i, j int) bool { return b.Manifest.Files[i].Path < b.Manifest.Files[j].Path })
 	b.Manifest.Version = bundleVersion(b.Manifest)
@@ -144,6 +136,22 @@ func run(command string) error {
 		if f.Format == "mrs" {
 			fmt.Printf("  %-24s %6d rules  %8d bytes\n", f.ID, f.Count, f.Bytes)
 		}
+	}
+	return nil
+}
+
+func addLicenses(b *Bundle, root string) error {
+	licenseFiles, err := filepath.Glob(filepath.Join(root, "licenses", "*"))
+	if err != nil || len(licenseFiles) == 0 {
+		return errors.New("missing source license notices")
+	}
+	for _, name := range licenseFiles {
+		data, err := os.ReadFile(name)
+		if err != nil {
+			return err
+		}
+		data = bytes.ReplaceAll(data, []byte("\r\n"), []byte("\n"))
+		b.add("licenses/"+filepath.Base(name), data, "", "", "text", 0)
 	}
 	return nil
 }

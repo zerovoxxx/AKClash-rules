@@ -1,30 +1,30 @@
 {
   "schema_version": 1,
-  "version": "rules-45b7cdff5e1736acab4ad73a",
+  "version": "rules-d2a8578a1557497c76266045",
   "repository": "zerovoxxx/AKClash-rules",
   "kernel_revision": "70f0570405c3c2c47bb113b88db95006d239b346",
-  "generator_sha256": "62c689b477bb5db91f8a5bea182b3b66b66d5b7aaa5e570c8b7f1429816c1c25",
+  "generator_sha256": "db14ea888365f8cb6cfcb48b7677f194618816efbdeae32d86bc629cd0777a23",
   "files": [
     {
       "path": "licenses/MetaCubeX-GPL-3.0.txt",
       "asset": "MetaCubeX-GPL-3.0.txt",
       "format": "text",
-      "bytes": 35823,
-      "sha256": "230184f60bae2feaf244f10a8bac053c8ff33a183bcc365b4d8b876d2b7f4809"
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
     },
     {
       "path": "licenses/NOTICE.md",
       "asset": "NOTICE.md",
       "format": "text",
-      "bytes": 1726,
-      "sha256": "af9bd67ea5cac1a67376a37bd12ac9694b99e3bf32cc43d1a5c69b597efaa1f7"
+      "bytes": 1715,
+      "sha256": "aff5619776a5ffcf5f6cef5a4c44e82915ebecdbf14bdbb5b28efda30dc1c2ef"
     },
     {
       "path": "licenses/blackmatrix7-GPL-2.0.txt",
       "asset": "blackmatrix7-GPL-2.0.txt",
       "format": "text",
-      "bytes": 18431,
-      "sha256": "189b1af95d661151e054cea10c91b3d754e4de4d3fecfb074c1fb29476f7167b"
+      "bytes": 18092,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
     },
     {
       "path": "mrs/ai-cn-domain.mrs",

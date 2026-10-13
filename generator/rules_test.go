@@ -435,6 +435,36 @@ func TestClassicalPayloadValidation(t *testing.T) {
 	}
 }
 
+func TestLicenseArtifactsNormalizeLineEndings(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.Mkdir(filepath.Join(dir, "licenses"), 0755); err != nil {
+		t.Fatal(err)
+	}
+	const canonical = "License notice\nCopyright holder\n"
+	var first *Bundle
+	for _, input := range []string{canonical, strings.ReplaceAll(canonical, "\n", "\r\n")} {
+		name := filepath.Join(dir, "licenses", "NOTICE.md")
+		if err := os.WriteFile(name, []byte(input), 0644); err != nil {
+			t.Fatal(err)
+		}
+		bundle := &Bundle{Files: map[string][]byte{}}
+		if err := addLicenses(bundle, dir); err != nil {
+			t.Fatal(err)
+		}
+		if string(bundle.Files["licenses/NOTICE.md"]) != canonical {
+			t.Fatal("license artifact must use LF")
+		}
+		if first != nil && (!reflect.DeepEqual(first, bundle) || bundleVersion(first.Manifest) != bundleVersion(bundle.Manifest)) {
+			t.Fatal("license line endings changed bundle metadata or version")
+		}
+		original, err := os.ReadFile(name)
+		if err != nil || string(original) != input {
+			t.Fatal("license source was modified")
+		}
+		first = bundle
+	}
+}
+
 func TestGeneratorFingerprintNormalizesLineEndings(t *testing.T) {
 	dir := t.TempDir()
 	files := map[string]string{"main.go": "package main\n", "go.mod": "module test\n", "go.sum": "hash\n"}
