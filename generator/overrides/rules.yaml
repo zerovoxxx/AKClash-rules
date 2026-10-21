@@ -2,6 +2,9 @@
 app-proxy:
   add:
   - PROCESS-NAME,com.openai.chatgpt
+  - PROCESS-NAME,com.anthropic.claude
+  - PROCESS-NAME,claude
+  - PROCESS-NAME,claude.exe
 ai-cn-domain:
   add:
   - +.kimi.ai

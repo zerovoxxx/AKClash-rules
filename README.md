@@ -43,7 +43,7 @@ AKClash-rules/
 | 类别 | 产物 ID | 首版内容 | 默认出口 |
 | --- | --- | --- | --- |
 | 私有网络 | `private-domain`、`private-ip` | 私有域名与 IPv4/IPv6 | DIRECT |
-| 应用代理 | `app-proxy` | Android 包名匹配，当前包含 ChatGPT；classical YAML | Proxy |
+| 应用代理 | `app-proxy` | ChatGPT、Claude Android 包名及 Claude Code 原生进程匹配；classical YAML | Proxy |
 | 国内 AI | `ai-cn-domain` | 国内 AI 分类，加 Kimi/Moonshot 补充 | DIRECT |
 | 海外 AI | `ai-proxy-domain` | OpenAI、Claude、Gemini、Copilot、Grok | Proxy |
 | 聊天通信 | `chat-domain`、`chat-ip` | 首版来源为 Telegram 域名与 IPv4/IPv6 | Proxy |
@@ -55,7 +55,9 @@ AKClash-rules/
 
 域名/IP 产物使用 `<类别>-domain.yaml` / `<类别>-ip.yaml`，MRS 使用同名 `.mrs`，清单 ID 与文件名一致。`-ip` 对应 `behavior: ipcidr`，同一文件同时包含 IPv4/IPv6；上游来源 ID 不属于消费接口，继续保留原来源标识。`yaml/app-proxy.yaml` 使用 `behavior: classical`，只生成 YAML，不生成 MRS。
 
-应用包名在 [overrides/rules.yaml](generator/overrides/rules.yaml) 的 `app-proxy.add` 中维护，例如 `PROCESS-NAME,com.openai.chatgpt`。payload 不带出口；由 `RULE-SET,app-proxy,Proxy` 统一指定。应用集合位于私网、个人规则和既有远程集合之后、默认直连分类之前。新版 Android 客户端不保存 ChatGPT 包名；后续修改规则输入并发布新规则版本即可更新包名列表，集合保持非空。
+应用包名及进程名在 [overrides/rules.yaml](generator/overrides/rules.yaml) 的 `app-proxy.add` 中维护，例如 `PROCESS-NAME,com.openai.chatgpt`。payload 不带出口；由 `RULE-SET,app-proxy,Proxy` 统一指定。应用集合位于私网、个人规则和既有远程集合之后、默认直连分类之前。新版 Android 客户端不保存 ChatGPT 包名；后续修改规则输入并发布新规则版本即可更新应用列表，集合保持非空。
+
+Claude Android 使用[官方 Google Play 包名](https://play.google.com/store/apps/details?id=com.anthropic.claude) `com.anthropic.claude`；Claude Code 使用[原生安装](https://code.claude.com/docs/en/setup)的进程名 `claude`（macOS/Linux）和 `claude.exe`（Windows）。这些进程与 ChatGPT 共用应用代理集合，第三方域名和纯 IP 请求也走 `Proxy`，私网、个人及远程规则仍优先。npm 安装若被识别为 `node` / `node.exe`，继续使用已有 Anthropic 域名规则，不把所有 Node.js 进程纳入应用代理。桌面客户端当前仍消费 v1 清单，须先接入 v2 应用集合才能使用进程规则。
 
 域名和 IP **可以**写进一个 `behavior: classical` 的 YAML，例如：
 

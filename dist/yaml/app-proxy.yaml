@@ -1,2 +1,5 @@
 payload:
+  - 'PROCESS-NAME,claude'
+  - 'PROCESS-NAME,claude.exe'
+  - 'PROCESS-NAME,com.anthropic.claude'
   - 'PROCESS-NAME,com.openai.chatgpt'

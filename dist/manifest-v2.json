@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "rules-d2a8578a1557497c76266045",
+  "version": "rules-e6fbb2b9c12642d50ac0296d",
   "repository": "zerovoxxx/AKClash-rules",
   "kernel_revision": "70f0570405c3c2c47bb113b88db95006d239b346",
   "generator_sha256": "db14ea888365f8cb6cfcb48b7677f194618816efbdeae32d86bc629cd0777a23",
@@ -183,9 +183,9 @@
       "id": "app-proxy",
       "behavior": "classical",
       "format": "yaml",
-      "count": 1,
-      "bytes": 47,
-      "sha256": "091d8023b75b2740c04c8adb8cea28952870ef5e7aada17e4d8a0a8e9a99a6b1"
+      "count": 4,
+      "bytes": 143,
+      "sha256": "46430306668a159d5d3036d8880218b7e26b244c485494a87506612d17772b7b"
     },
     {
       "path": "yaml/chat-domain.yaml",
