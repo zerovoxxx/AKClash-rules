@@ -43,7 +43,7 @@ AKClash-rules/
 | 类别 | 产物 ID | 首版内容 | 默认出口 |
 | --- | --- | --- | --- |
 | 私有网络 | `private-domain`、`private-ip` | 私有域名与 IPv4/IPv6 | DIRECT |
-| 应用代理 | `app-proxy` | ChatGPT、Claude Android 包名及 Claude Code 原生进程匹配；classical YAML | Proxy |
+| 应用代理 | `app-proxy` | ChatGPT Android/桌面、Claude Android 包名及 Claude Code 原生进程匹配；classical YAML | Proxy |
 | 国内 AI | `ai-cn-domain` | 国内 AI 分类，加 Kimi/Moonshot 补充 | DIRECT |
 | 海外 AI | `ai-proxy-domain` | OpenAI、Claude、Gemini、Copilot、Grok | Proxy |
 | 聊天通信 | `chat-domain`、`chat-ip` | 首版来源为 Telegram 域名与 IPv4/IPv6 | Proxy |
@@ -57,7 +57,7 @@ AKClash-rules/
 
 应用包名及进程名在 [overrides/rules.yaml](generator/overrides/rules.yaml) 的 `app-proxy.add` 中维护，例如 `PROCESS-NAME,com.openai.chatgpt`。payload 不带出口；由 `RULE-SET,app-proxy,Proxy` 统一指定。应用集合位于私网、个人规则和既有远程集合之后、默认直连分类之前。新版 Android 客户端不保存 ChatGPT 包名；后续修改规则输入并发布新规则版本即可更新应用列表，集合保持非空。
 
-Claude Android 使用[官方 Google Play 包名](https://play.google.com/store/apps/details?id=com.anthropic.claude) `com.anthropic.claude`；Claude Code 使用[原生安装](https://code.claude.com/docs/en/setup)的进程名 `claude`（macOS/Linux）和 `claude.exe`（Windows）。这些进程与 ChatGPT 共用应用代理集合，第三方域名和纯 IP 请求也走 `Proxy`，私网、个人及远程规则仍优先。npm 安装若被识别为 `node` / `node.exe`，继续使用已有 Anthropic 域名规则，不把所有 Node.js 进程纳入应用代理。桌面客户端当前仍消费 v1 清单，须先接入 v2 应用集合才能使用进程规则。
+Claude Android 使用[官方 Google Play 包名](https://play.google.com/store/apps/details?id=com.anthropic.claude) `com.anthropic.claude`；Claude Code 使用[原生安装](https://code.claude.com/docs/en/setup)的进程名 `claude`（macOS/Linux）和 `claude.exe`（Windows）。这些进程与 ChatGPT 共用应用代理集合，第三方域名和纯 IP 请求也走 `Proxy`，私网、个人及远程规则仍优先。npm 安装若被识别为 `node` / `node.exe`，继续使用已有 Anthropic 域名规则，不把所有 Node.js 进程纳入应用代理。ChatGPT 桌面进程为 `ChatGPT`（macOS）和 `ChatGPT.exe`（Windows）。新版 Android 与桌面均消费 v2 应用集合；首次使用须安装已支持 v2 的客户端，后续应用进程列表更新只需刷新规则。
 
 域名和 IP **可以**写进一个 `behavior: classical` 的 YAML，例如：
 
@@ -131,9 +131,9 @@ rules:
 
 这只是聊天类别的引用示例，需要消费方已有 `Proxy` 节点组。应用集合使用 `path: ./dist/yaml/app-proxy.yaml`、`behavior: classical`、`format: yaml`，引用为 `RULE-SET,app-proxy,Proxy`。完整 v2 顺序见 [dist/routing-v2.json](dist/routing-v2.json)，旧版顺序见 [dist/routing.json](dist/routing.json)。路由 JSON 是供客户端组装的数据契约，不是完整 Clash 配置；domain/ipcidr 的 YAML 和 MRS 表示相同规则，classical 只提供 YAML。
 
-Android 消费端代码的对应契约（首次启用应用集合仍须升级 App）：
+Android 与桌面消费端代码的对应契约（首次启用应用集合仍须升级客户端）：
 
-1. 新版入口为 `https://github.com/zerovoxxx/AKClash-rules/releases/latest/download/manifest-v2.json`；旧 Android 和桌面继续使用原 `manifest.json`。新版兼容旧缓存，v2 入口明确 HTTP 404 时回退旧入口；其他校验或网络错误保留既有有效缓存。
+1. 新版 Android 和桌面入口为 `https://github.com/zerovoxxx/AKClash-rules/releases/latest/download/manifest-v2.json`；旧版客户端继续使用原 `manifest.json`。新版兼容旧缓存，v2 入口明确 HTTP 404 时回退旧入口；其他校验或网络错误保留既有有效缓存。
 2. 读取清单中的 `version` 后，固定从 `https://github.com/zerovoxxx/AKClash-rules/releases/download/<version>/<asset>` 获取该版本所需文件，不逐个追踪 latest。
 3. 检查支持的 schema、固定仓库、类型、大小、SHA-256 和路由引用，候选版本全部通过后再切换；失败继续使用随包或上一有效版本。
 4. Android 运行时每 30 分钟检查，回前台补检查，支持手动刷新；应用关闭时不承诺定时执行。domain/ipcidr 下载 MRS，classical 下载 YAML，均由应用校验并通过 file Provider 交给内核。

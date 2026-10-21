@@ -2,6 +2,8 @@
 app-proxy:
   add:
   - PROCESS-NAME,com.openai.chatgpt
+  - PROCESS-NAME,ChatGPT
+  - PROCESS-NAME,ChatGPT.exe
   - PROCESS-NAME,com.anthropic.claude
   - PROCESS-NAME,claude
   - PROCESS-NAME,claude.exe
