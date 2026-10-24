@@ -420,6 +420,19 @@
     "provider": "platform-direct-ip"
   },
   {
+    "name": "sgp-a SSH direct",
+    "process": "ssh.exe",
+    "ip": "43.160.230.129",
+    "target": "DIRECT",
+    "provider": "platform-direct-ip"
+  },
+  {
+    "name": "sgp-a adjacent IP remains proxied",
+    "ip": "43.160.230.130",
+    "target": "Proxy",
+    "provider": "MATCH"
+  },
+  {
     "name": "No keyword -cn heuristic",
     "host": "example-cn.routing-check.net",
     "ip": "8.8.8.8",

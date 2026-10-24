@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "rules-ade3c8e11374cfb2756b2568",
+  "version": "rules-e36b7c891c2328a0e2e84f33",
   "repository": "zerovoxxx/AKClash-rules",
   "kernel_revision": "70f0570405c3c2c47bb113b88db95006d239b346",
   "generator_sha256": "db14ea888365f8cb6cfcb48b7677f194618816efbdeae32d86bc629cd0777a23",
@@ -102,9 +102,9 @@
       "id": "platform-direct-ip",
       "behavior": "ipcidr",
       "format": "mrs",
-      "count": 1,
-      "bytes": 48,
-      "sha256": "02bbc25da607152726caee9d2b5924548b8e7859b990de6f8f1da6e01bb81b9b"
+      "count": 2,
+      "bytes": 62,
+      "sha256": "097a3d28ce627de76548e2414d29f9e7ce3a7f86eed9059d17431179db5868b1"
     },
     {
       "path": "mrs/private-domain.mrs",
@@ -226,9 +226,9 @@
       "id": "platform-direct-ip",
       "behavior": "ipcidr",
       "format": "yaml",
-      "count": 1,
-      "bytes": 26,
-      "sha256": "1fdf5146f069890d5a1423bfc5e95ea9e3bbeba1a2482fb9b7e7533076ca8ab4"
+      "count": 2,
+      "bytes": 50,
+      "sha256": "fff50d10b789b931b2aa9c55b2633227db7c6be285c865aaf44b2f8f3009c9cf"
     },
     {
       "path": "yaml/private-domain.yaml",
